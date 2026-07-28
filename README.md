@@ -1,4 +1,7 @@
 # BlocFone
+<p align="center">
+  <img src="app/src/main/res/drawable/icon.png" alt="Icono de BlocFone" width="200"/>
+</p>
 
 BlocFone es una aplicación Android local para filtrar y rechazar llamadas entrantes mediante la API pública `CallScreeningService`. Su objetivo es ofrecer un control simple sobre qué llamadas bloquear, sin enviar números, contactos ni preferencias a servicios externos.
 
