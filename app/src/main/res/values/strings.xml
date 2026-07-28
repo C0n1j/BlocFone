@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BlocFone</string>
+    <string name="app_tagline">Filtro local de llamadas</string>
+    <string name="status_title">Estado</string>
+    <string name="role_label">Protección de llamadas</string>
+    <string name="contacts_label">Acceso a contactos</string>
+    <string name="active">Activo</string>
+    <string name="inactive">Pendiente</string>
+    <string name="grant_role">Activar protección</string>
+    <string name="grant_contacts">Permitir contactos</string>
+    <string name="role_unavailable">El rol de filtrado no está disponible en este dispositivo.</string>
+    <string name="mode_title">Qué querés bloquear</string>
+    <string name="mode_all_title">Todas las llamadas entrantes</string>
+    <string name="mode_all_description">Rechaza cada llamada que Android entregue al servicio.</string>
+    <string name="mode_unknown_title">Números no guardados</string>
+    <string name="mode_unknown_description">Rechaza solo si el número no existe en tus contactos.</string>
+    <string name="mode_selected_title">Números seleccionados</string>
+    <string name="mode_selected_description">Rechaza únicamente coincidencias exactas de tu lista local.</string>
+    <string name="numbers_title">Lista de números</string>
+    <string name="number_hint">Ej.: +54 11 5555 1234</string>
+    <string name="add_number">Agregar</string>
+    <string name="remove_number">Quitar</string>
+    <string name="empty_numbers">Todavía no agregaste números.</string>
+    <string name="invalid_number">Usá al menos tres dígitos; se permiten +, espacios, guiones y paréntesis, pero no letras.</string>
+    <string name="storage_error">No se pudo guardar el cambio. Intentá nuevamente.</string>
+    <string name="privacy_title">Privacidad y límites</string>
+    <string name="privacy_body">Todo queda en este teléfono. BlocFone no usa Internet, no copia tu agenda y consulta solo si el número entrante existe en contactos.</string>
+    <string name="limitations_body">En Android 10, el sistema puede no entregar a apps de filtrado llamadas de contactos guardados, aun con permiso de contactos: Todas y Números seleccionados pueden quedar incompletos. Las llamadas privadas también pueden no llegar. Versiones nuevas, fabricantes y operadoras requieren pruebas físicas; no se garantiza filtrar todas las llamadas.</string>
+    <string name="exact_match_note">La comparación no usa coincidencias por terminación. Guardá el número con el mismo formato internacional que recibe el teléfono.</string>
+</resources>
