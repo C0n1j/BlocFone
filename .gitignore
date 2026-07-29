@@ -9,4 +9,4 @@ captures/
 .externalNativeBuild/
 .cxx/
 mis_claves.jks
-app/*
+/app/release/

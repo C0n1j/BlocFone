@@ -9,6 +9,7 @@ import es.c0n1j.blocfone.data.SettingsRepository
 import es.c0n1j.blocfone.domain.BlockingMode
 import es.c0n1j.blocfone.domain.CallRuleEvaluator
 import es.c0n1j.blocfone.domain.IncomingCall
+import es.c0n1j.blocfone.domain.PhoneNumberCanonicalizer
 import es.c0n1j.blocfone.domain.ScreeningDecision
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
@@ -70,19 +71,25 @@ class BlocFoneCallScreeningService : CallScreeningService() {
         }
 
         val rules = SettingsRepository(applicationContext).snapshot()
+        if (!rules.isBlockingEnabled) return CallResponse.Builder().build()
+
         val normalizedNumber = callDetails.handle
             ?.takeIf { it.scheme == "tel" }
             ?.schemeSpecificPart
-            ?.let(SettingsRepository::normalizeNumber)
+            ?.let(PhoneNumberCanonicalizer::identity)
 
         val isInContacts = when {
             rules.mode != BlockingMode.UNKNOWN_NUMBERS -> null
             normalizedNumber == null -> null
+            // ALL_INCOMING only consumes the persisted exception snapshot.
             else -> ContactLookup(contentResolver).exists(normalizedNumber)
         }
         val decision = CallRuleEvaluator.evaluate(
             rules = rules,
-            call = IncomingCall(normalizedNumber, isInContacts),
+            call = IncomingCall(
+                normalizedNumber = normalizedNumber,
+                isInContacts = isInContacts,
+            ),
         )
 
         return when (decision) {

@@ -7,8 +7,10 @@ enum class BlockingMode {
 }
 
 data class ScreeningRules(
+    val isBlockingEnabled: Boolean = true,
     val mode: BlockingMode = BlockingMode.UNKNOWN_NUMBERS,
     val selectedNumbers: Set<String> = emptySet(),
+    val allowedNumbers: Set<String> = emptySet(),
 )
 
 data class IncomingCall(
@@ -23,8 +25,11 @@ enum class ScreeningDecision {
 
 object CallRuleEvaluator {
     fun evaluate(rules: ScreeningRules, call: IncomingCall): ScreeningDecision {
+        if (!rules.isBlockingEnabled) return ScreeningDecision.ALLOW
+
         val shouldReject = when (rules.mode) {
-            BlockingMode.ALL_INCOMING -> true
+            BlockingMode.ALL_INCOMING ->
+                call.normalizedNumber == null || call.normalizedNumber !in rules.allowedNumbers
             BlockingMode.UNKNOWN_NUMBERS ->
                 call.normalizedNumber != null && call.isInContacts == false
             BlockingMode.SELECTED_NUMBERS ->
