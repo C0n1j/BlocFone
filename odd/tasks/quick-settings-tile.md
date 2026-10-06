@@ -62,7 +62,7 @@ Users need a fast way to enable or disable blocking without opening the full app
 - [x] Physical-device smoke validation covers adding the tile, tapping it, state synchronization, long press, and mode changes; the user explicitly confirmed the requested visual/manual smoke test with “Ok, funciona”.
 - [x] The compact `BlockingLevelActivity` presents a visible X with an accessible `R.string.close` description, and activating it closes the activity.
 - [x] App `versionName` is `1.2.0`, while `versionCode` remains unchanged.
-- [ ] Debug lint and debug/release APK plus release AAB builds complete; exact artifact paths and observed signing status are recorded rather than assumed.
+- [x] Debug lint and debug/release APK plus release AAB builds complete; exact artifact paths and observed signing status are recorded rather than assumed.
 - [ ] Physical-device smoke confirms that the X closes the compact window.
 
 ## Test-first policy
@@ -100,10 +100,10 @@ Device evidence: `.\gradlew.bat installDebug` succeeded on one A142 running Andr
 
 ### Planned follow-up checks
 
-- [ ] `.\gradlew.bat :app:lintDebug :app:assembleDebug :app:assembleRelease :app:bundleRelease`
-- [ ] Run `.\gradlew.bat :app:signingReport` if needed to establish signing status.
-- [ ] Verify and record the exact produced debug APK, release APK, and release AAB paths.
-- [ ] Verify signing rather than assuming it. Current exploration expects a debug-key-signed debug APK and unsigned release APK/AAB because no release `signingConfig` is wired.
+- [x] `.\gradlew.bat :app:lintDebug :app:assembleDebug :app:assembleRelease :app:bundleRelease` completed successfully in 1m16s with 98 actionable tasks (33 executed, 65 up-to-date).
+- [x] `.\gradlew.bat :app:signingReport` passed: debug signing is configured and the release signing configuration is null.
+- [x] Verified and recorded the exact produced debug APK, release APK, and release AAB paths below. No debug AAB was requested or produced.
+- [x] Verified signing rather than assuming it: the debug APK is signed with the debug certificate and verifies with APK Signature Scheme v2; the release APK and AAB are unsigned and are not distribution-ready.
 - [ ] On a physical device, open the compact blocking-level activity and confirm that activating the X closes its window.
 - [ ] Preserve the existing full-unit-suite result: 34 tests with the two known failures above; never record that suite as passing unless a later observed run actually passes.
 
@@ -114,8 +114,18 @@ Device evidence: `.\gradlew.bat installDebug` succeeded on one A142 running Andr
 | QST-1 | Complete | RED: focused test failed to compile because the presentation mapping and tile strings did not exist. GREEN/refactor: all 3 mapping tests pass. Surfaces: repository toggle; quick-settings mapping, service, and activity; shared selector/main-screen integration; manifest, strings, icon, and test. Authored lines: 376 additions. Route: delegated direct; preparation trigger confirmed by 2+ non-trivial files. Verification: focused test, lint, and assembly pass; full unit suite reproduces only the documented `ContactExceptionCodecTest.reference codec ignores unknown versions and malformed records` and `CallRuleEvaluatorTest.allowed exceptions do not change unknown or selected modes` base failures. Implementation commit: `ee622cd feat(android): add blocking quick settings tile`. |
 | QST-2 | Complete | `.\gradlew.bat testDebugUnitTest` ran 34 tests with 2 failures: `ContactExceptionCodecTest > reference codec ignores unknown versions and malformed records` at `ContactExceptionCodecTest.kt:22`, and `CallRuleEvaluatorTest > allowed exceptions do not change unknown or selected modes` at `CallRuleEvaluatorTest.kt:129`; both are the same previously documented base failures, so the full unit suite is not recorded as passing. `.\gradlew.bat installDebug` succeeded on one A142 running Android API 36; explicit launcher, tile support check, add-tile, and click-tile commands succeeded; component registrations were confirmed. The user explicitly confirmed the complete requested visual/manual smoke test with “Ok, funciona”. Repository status remained clean except for untouched untracked `.atl/`. |
 | QST-3 | Complete | Added a Material 3 `IconButton` with `Icons.Default.Close` beside the compact activity title. Its `contentDescription` reuses `R.string.close`, and its click callback invokes `finish()` on `BlockingLevelActivity`. Added the BOM-managed `androidx.compose.material:material-icons-core` dependency. Set app `versionName` to `1.2.0`; `versionCode` remains `3`. `.\gradlew.bat :app:lintDebug :app:assembleDebug` completed successfully in 37 seconds with 46 actionable tasks (19 executed, 27 up-to-date). `git diff --check` exited successfully with only Git's LF-to-CRLF working-copy warnings. Structural readback confirmed the X, accessibility string, `finish()`, version values, and that tracked edits were confined to the three authorized surfaces; untracked `.atl/` remained untouched. No local RED applies because the repository has no `androidTest` or Compose UI-test harness. |
-| QST-4 | Pending | Exact build, artifact, signing, and physical-close checks are listed above. Expected artifact signing remains a hypothesis until verified. |
+| QST-4 | Partial | Local build, artifact, and signing checks are complete. `.\gradlew.bat :app:lintDebug :app:assembleDebug :app:assembleRelease :app:bundleRelease` was BUILD SUCCESSFUL in 1m16s with 98 actionable tasks (33 executed, 65 up-to-date). `.\gradlew.bat :app:signingReport` passed with debug signing configured and release config null. The debug APK is signed and verified with APK Signature Scheme v2 and a debug certificate; release outputs are unsigned and not distribution-ready. Physical X-close behavior remains pending because no device deployment or ADB was authorized. Repository status immediately before this tracker edit was `## feat/quick-settings-close-release` plus only untouched untracked `.atl/`. |
+
+### QST-4 local artifact evidence
+
+| Artifact | Size | UTC modified | SHA-256 | Version | Signing |
+|---|---:|---|---|---|---|
+| `app/build/outputs/apk/debug/app-debug.apk` | 33,687,359 bytes | `2026-10-06T18:08:13.8933863Z` | `9528DE52A6A0C42D667395E5DE3748867633111506E85EE9642C9A5CFD800D3F` | `versionName 1.2.0`, `versionCode 3` | Signed and verified with APK Signature Scheme v2 using the debug certificate. |
+| `app/build/outputs/apk/release/app-release-unsigned.apk` | 5,770,313 bytes | `2026-10-06T18:13:00.8344597Z` | `4A98AFCCA5A35D741084D13DFC6D4E6E3030C140D8C61CF7C6E51B7A5CE12408` | `versionName 1.2.0`, `versionCode 3` | Unsigned and does not verify; not distribution-ready. |
+| `app/build/outputs/bundle/release/app-release.aab` | 6,479,799 bytes | `2026-10-06T18:13:02.1028608Z` | `50AF00F498A78252CA824F547291D6C5170062CB4529E6EE3632F6BEED066B37` | `versionName 1.2.0`, `versionCode 3` | Unsigned per `jarsigner`; not distribution-ready. |
+
+No debug AAB was requested or produced. Non-blocking observed build warnings were a missing `ExperimentalCoroutinesApi` opt-in at `SettingsRepository.kt:71` and Gradle deprecations affecting Gradle 9.0 compatibility.
 
 ## Next step
 
-Run QST-4 through delegated verification/build, including artifact production, signing evidence, and physical confirmation that the X closes the compact window. After QST-4 is verified and evidence is recorded, use the user-authorized local integration into `main`; do not push or perform any remote operation. Preserve `825cf81` as the initial reviewed boundary and all completed QST-1/QST-2 evidence.
+Complete QST-4 by obtaining authorized physical-device confirmation that activating the X closes the compact window. Local build, artifact, and signing evidence is complete; release outputs remain unsigned and are not distribution-ready. After physical confirmation is recorded, use the user-authorized local integration into `main`; do not push or perform any remote operation. Preserve `825cf81` as the initial reviewed boundary and all completed QST-1/QST-2 evidence.
