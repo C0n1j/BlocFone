@@ -121,6 +121,16 @@ class SettingsRepository(context: Context) {
         }
     }
 
+    suspend fun toggleBlockingEnabled(): Boolean {
+        var enabled = false
+        val updatedPreferences = dataStore.edit { preferences ->
+            enabled = !(preferences[BLOCKING_ENABLED_KEY] ?: true)
+            preferences[BLOCKING_ENABLED_KEY] = enabled
+        }
+        updateLastValid(updatedPreferences)
+        return enabled
+    }
+
     suspend fun addNumber(rawNumber: String): Boolean {
         val canonical = PhoneNumberCanonicalizer.canonicalize(rawNumber) ?: return false
         editAndRefresh { preferences ->

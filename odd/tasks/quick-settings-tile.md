@@ -38,13 +38,13 @@ Users need a fast way to enable or disable blocking without opening the full app
 
 ## Acceptance criteria
 
-- [ ] The tile can be added from Android Quick Settings and has the required service declaration, icon, and strings.
-- [ ] A normal tap atomically toggles the blocking-enabled value in the existing DataStore.
-- [ ] Tile presentation deterministically maps the persisted flag to active/inactive state and remains synchronized with external app changes.
-- [ ] A long press opens a compact app-owned blocking-level preferences activity.
-- [ ] The compact activity changes the authoritative persisted blocking level through a selector reused with the existing preferences UI.
-- [ ] No inline SystemUI submenu or parallel persistence path is introduced.
-- [ ] The focused unit test, lint, and debug assembly checks pass.
+- [x] The tile can be added from Android Quick Settings and has the required service declaration, icon, and strings.
+- [x] A normal tap atomically toggles the blocking-enabled value in the existing DataStore.
+- [x] Tile presentation deterministically maps the persisted flag to active/inactive state and remains synchronized with external app changes.
+- [x] A long press opens a compact app-owned blocking-level preferences activity.
+- [x] The compact activity changes the authoritative persisted blocking level through a selector reused with the existing preferences UI.
+- [x] No inline SystemUI submenu or parallel persistence path is introduced.
+- [x] The focused unit test, lint, and debug assembly checks pass.
 - [ ] Physical-device smoke validation covers adding the tile, tapping it, state synchronization, long press, and mode changes; manual user confirmation may remain pending and must be recorded.
 
 ## Test-first policy
@@ -53,7 +53,7 @@ For deterministic presentation mapping, first add the smallest meaningful unit t
 
 ## Stable task checklist
 
-- [ ] **QST-1 — Implement one coherent complete work unit.** Add the atomic persisted toggle, tested tile-presentation mapping, `TileService`, manifest/icon/strings, compact long-press preferences activity, reusable mode selector, and integration. Route: delegated direct. Writer/preparation evidence: the change spans 2+ non-trivial files and the preparation/mapping trigger fired. Close as a reviewable work-unit commit with implementation and tests together.
+- [x] **QST-1 — Implement one coherent complete work unit.** Add the atomic persisted toggle, tested tile-presentation mapping, `TileService`, manifest/icon/strings, compact long-press preferences activity, reusable mode selector, and integration. Route: delegated direct. Writer/preparation evidence: the change spans 2+ non-trivial files and the preparation/mapping trigger fired. Close as a reviewable work-unit commit with implementation and tests together.
 - [ ] **QST-2 — Verify behavior and device integration.** Run the focused automated checks and physical-device smoke scenarios. Route: delegated verification. Record exact results; manual user confirmation may remain pending.
 
 ## Checks
@@ -61,8 +61,8 @@ For deterministic presentation mapping, first add the smallest meaningful unit t
 ### Automated
 
 - [ ] `.\gradlew.bat testDebugUnitTest`
-- [ ] `.\gradlew.bat lintDebug`
-- [ ] `.\gradlew.bat assembleDebug`
+- [x] `.\gradlew.bat lintDebug`
+- [x] `.\gradlew.bat assembleDebug`
 
 ### Physical device
 
@@ -76,9 +76,9 @@ For deterministic presentation mapping, first add the smallest meaningful unit t
 
 | Task | Status | Evidence |
 |---|---|---|
-| QST-1 | Pending | RED/GREEN output, changed-file summary, authored-line count, commit hash, and review disposition: _pending_ |
+| QST-1 | Complete | RED: focused test failed to compile because the presentation mapping and tile strings did not exist. GREEN/refactor: all 3 mapping tests pass. Surfaces: repository toggle; quick-settings mapping, service, and activity; shared selector/main-screen integration; manifest, strings, icon, and test. Authored lines: 376 additions. Route: delegated direct; preparation trigger confirmed by 2+ non-trivial files. Verification: focused test, lint, and assembly pass; full unit suite reproduces only the documented `ContactExceptionCodecTest.reference codec ignores unknown versions and malformed records` and `CallRuleEvaluatorTest.allowed exceptions do not change unknown or selected modes` base failures. Commit identity and review disposition: _pending parent commit/review_. |
 | QST-2 | Pending | Exact automated command results and device smoke notes, including any pending user confirmation: _pending_ |
 
 ## Next step
 
-Delegate QST-1 from `feat/quick-settings-tile`, beginning with the presentation-mapping RED test and preserving `825cf81` as the initial reviewed boundary.
+Run QST-2 automated re-verification and physical-device smoke from `feat/quick-settings-tile`; preserve `825cf81` as the initial reviewed boundary.

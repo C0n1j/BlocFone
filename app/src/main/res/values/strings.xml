@@ -59,4 +59,9 @@
     <string name="settings_loading">Cargando configuración…</string>
     <string name="settings_read_error_title">Configuración no disponible</string>
     <string name="settings_read_error_with_detail">No se pudo leer la configuración. Se conservará la última vista válida si existe. %1$s</string>
+    <string name="tile_label">BlocFone</string>
+    <string name="tile_blocking_active">Bloqueo activo</string>
+    <string name="tile_blocking_paused">Bloqueo pausado</string>
+    <string name="blocking_level_title">Nivel de bloqueo</string>
+    <string name="blocking_level_description">Elegí qué llamadas bloquear. Este cambio no activa el bloqueo.</string>
 </resources>

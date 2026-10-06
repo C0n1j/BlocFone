@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -26,7 +25,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -121,7 +119,7 @@ fun BlocFoneScreen(
                     onRequestRole = onRequestRole,
                     onBlockingEnabledChange = onBlockingEnabledChange,
                 )
-                ModesCard(state.rules, onSelectMode)
+                BlockingModeSelector(state.rules.mode, onSelectMode)
                 if (state.rules.mode == BlockingMode.ALL_INCOMING) {
                     ExceptionsCard(
                         state = state,
@@ -240,20 +238,6 @@ private fun StatusCard(
     HorizontalDivider()
     StatusRow(stringResource(R.string.contacts_label), contactsGranted, stringResource(R.string.grant_contacts), true, onRequestContacts)
 }
-
-@Composable
-private fun ModesCard(rules: ScreeningRules, onSelectMode: (BlockingMode) -> Unit) =
-    SectionCard(title = stringResource(R.string.mode_title)) {
-        ModeRow(R.string.mode_all_title, R.string.mode_all_description, rules.mode == BlockingMode.ALL_INCOMING) {
-            onSelectMode(BlockingMode.ALL_INCOMING)
-        }
-        ModeRow(R.string.mode_unknown_title, R.string.mode_unknown_description, rules.mode == BlockingMode.UNKNOWN_NUMBERS) {
-            onSelectMode(BlockingMode.UNKNOWN_NUMBERS)
-        }
-        ModeRow(R.string.mode_selected_title, R.string.mode_selected_description, rules.mode == BlockingMode.SELECTED_NUMBERS) {
-            onSelectMode(BlockingMode.SELECTED_NUMBERS)
-        }
-    }
 
 @Composable
 private fun ExceptionsCard(
@@ -476,23 +460,6 @@ private fun StatusRow(label: String, granted: Boolean, buttonText: String, enabl
             Text(stringResource(if (granted) R.string.active else R.string.inactive))
         }
         if (!granted) OutlinedButton(onClick = onClick, enabled = enabled) { Text(buttonText) }
-    }
-}
-
-@Composable
-private fun ModeRow(titleRes: Int, descriptionRes: Int, selected: Boolean, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .selectable(selected = selected, role = Role.RadioButton, onClick = onClick),
-        verticalAlignment = Alignment.Top,
-    ) {
-        RadioButton(selected = selected, onClick = null)
-        Spacer(Modifier.width(8.dp))
-        Column {
-            Text(stringResource(titleRes), style = MaterialTheme.typography.titleMedium)
-            Text(stringResource(descriptionRes), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
     }
 }
 
