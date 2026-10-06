@@ -91,9 +91,10 @@ Exception recorded before implementation: edge-to-edge geometry and system-bar i
 - `./gradlew.bat assembleDebug`: passed (`BUILD SUCCESSFUL`).
 - Structural readback: passed; `enableEdgeToEdge()` precedes `setContent`, the root `Column` is the sole safe-drawing inset owner, legacy fixed system-bar attributes and the opt-out flag are absent from the authorized implementation, and the staged-file list is empty.
 - Authored line count: 106 changed lines (99 ODD document lines plus 4 source additions and 3 source deletions), below the 400-line forecast.
-- Work-unit commit: pending transaction-controller staging and commit; the ODD document intentionally does not self-record its future commit SHA.
+- Work-unit commit: `44b9ad9` (`fix(ui): handle edge-to-edge system insets`).
+- Native assessment for range based at `daaf80ac2445f3ad301c4c480d8b4b6d3d57d10e`: risk `medium`, changed paths `4`, changed lines `106`, review due `false`, review due reason `under_budget`.
 - Working-tree preservation: pre-existing `app/src/main/AndroidManifest.xml` and `.atl/` remain untouched; a concurrent `app/build.gradle.kts` modification appeared during verification and was also left untouched and unstaged.
 
 ## Next Step
 
-The transaction controller should stage only the ODD document and three implementation files, create `fix(ui): handle edge-to-edge system insets`, and record the resulting SHA in Engram without a circular docs-only commit.
+The parent transaction controller should create the metadata-only commit for this evidence update without altering the completed work unit.
