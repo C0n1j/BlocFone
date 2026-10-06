@@ -45,7 +45,7 @@ Users need a fast way to enable or disable blocking without opening the full app
 - [x] The compact activity changes the authoritative persisted blocking level through a selector reused with the existing preferences UI.
 - [x] No inline SystemUI submenu or parallel persistence path is introduced.
 - [x] The focused unit test, lint, and debug assembly checks pass.
-- [ ] Physical-device smoke validation covers adding the tile, tapping it, state synchronization, long press, and mode changes; manual user confirmation may remain pending and must be recorded.
+- [x] Physical-device smoke validation covers adding the tile, tapping it, state synchronization, long press, and mode changes; the user explicitly confirmed the requested visual/manual smoke test with “Ok, funciona”.
 
 ## Test-first policy
 
@@ -54,31 +54,35 @@ For deterministic presentation mapping, first add the smallest meaningful unit t
 ## Stable task checklist
 
 - [x] **QST-1 — Implement one coherent complete work unit.** Add the atomic persisted toggle, tested tile-presentation mapping, `TileService`, manifest/icon/strings, compact long-press preferences activity, reusable mode selector, and integration. Route: delegated direct. Writer/preparation evidence: the change spans 2+ non-trivial files and the preparation/mapping trigger fired. Close as a reviewable work-unit commit with implementation and tests together.
-- [ ] **QST-2 — Verify behavior and device integration.** Run the focused automated checks and physical-device smoke scenarios. Route: delegated verification. Record exact results; manual user confirmation may remain pending.
+- [x] **QST-2 — Verify behavior and device integration.** Run the focused automated checks and physical-device smoke scenarios. Route: delegated verification. Exact automated failures and manual user confirmation are recorded below.
 
 ## Checks
 
 ### Automated
 
-- [ ] `.\gradlew.bat testDebugUnitTest`
+- [x] `.\gradlew.bat testDebugUnitTest` ran exactly 34 tests with 2 failures, both matching previously documented base failures:
+  - `ContactExceptionCodecTest > reference codec ignores unknown versions and malformed records` at `ContactExceptionCodecTest.kt:22`.
+  - `CallRuleEvaluatorTest > allowed exceptions do not change unknown or selected modes` at `CallRuleEvaluatorTest.kt:129`.
 - [x] `.\gradlew.bat lintDebug`
 - [x] `.\gradlew.bat assembleDebug`
 
 ### Physical device
 
-- [ ] Add the BlocFone tile from Quick Settings.
-- [ ] Tap the tile and confirm persisted blocking toggles atomically.
-- [ ] Change blocking in the app and confirm tile state synchronizes.
-- [ ] Long-press the tile and confirm the compact selector opens.
-- [ ] Change blocking level and confirm both compact and existing preferences surfaces reflect the persisted mode.
+- [x] Add the BlocFone tile from Quick Settings.
+- [x] Tap the tile and confirm persisted blocking toggles atomically.
+- [x] Change blocking in the app and confirm tile state synchronizes.
+- [x] Long-press the tile and confirm the compact selector opens.
+- [x] Change blocking level and confirm both compact and existing preferences surfaces reflect the persisted mode.
+
+Device evidence: `.\gradlew.bat installDebug` succeeded on one A142 running Android API 36. Explicit launcher `es.c0n1j.blocfone/.MainActivity` succeeded. The registered tile component is `es.c0n1j.blocfone/.quicksettings.BlocFoneTileService` with `android.permission.BIND_QUICK_SETTINGS_TILE`; the registered long-press activity is `es.c0n1j.blocfone/.quicksettings.BlockingLevelActivity`. `cmd statusbar check-support` returned `true`, and the add-tile and click-tile commands completed successfully. The user then explicitly confirmed visibility, tap/state synchronization, long-press opening, and blocking-level behavior with “Ok, funciona”. Repository status before and after verification remained `## feat/quick-settings-tile` plus only `?? .atl/`.
 
 ## Progress and evidence
 
 | Task | Status | Evidence |
 |---|---|---|
-| QST-1 | Complete | RED: focused test failed to compile because the presentation mapping and tile strings did not exist. GREEN/refactor: all 3 mapping tests pass. Surfaces: repository toggle; quick-settings mapping, service, and activity; shared selector/main-screen integration; manifest, strings, icon, and test. Authored lines: 376 additions. Route: delegated direct; preparation trigger confirmed by 2+ non-trivial files. Verification: focused test, lint, and assembly pass; full unit suite reproduces only the documented `ContactExceptionCodecTest.reference codec ignores unknown versions and malformed records` and `CallRuleEvaluatorTest.allowed exceptions do not change unknown or selected modes` base failures. Commit identity and review disposition: _pending parent commit/review_. |
-| QST-2 | Pending | Exact automated command results and device smoke notes, including any pending user confirmation: _pending_ |
+| QST-1 | Complete | RED: focused test failed to compile because the presentation mapping and tile strings did not exist. GREEN/refactor: all 3 mapping tests pass. Surfaces: repository toggle; quick-settings mapping, service, and activity; shared selector/main-screen integration; manifest, strings, icon, and test. Authored lines: 376 additions. Route: delegated direct; preparation trigger confirmed by 2+ non-trivial files. Verification: focused test, lint, and assembly pass; full unit suite reproduces only the documented `ContactExceptionCodecTest.reference codec ignores unknown versions and malformed records` and `CallRuleEvaluatorTest.allowed exceptions do not change unknown or selected modes` base failures. Implementation commit: `ee622cd feat(android): add blocking quick settings tile`. |
+| QST-2 | Complete | `.\gradlew.bat testDebugUnitTest` ran 34 tests with 2 failures: `ContactExceptionCodecTest > reference codec ignores unknown versions and malformed records` at `ContactExceptionCodecTest.kt:22`, and `CallRuleEvaluatorTest > allowed exceptions do not change unknown or selected modes` at `CallRuleEvaluatorTest.kt:129`; both are the same previously documented base failures, so the full unit suite is not recorded as passing. `.\gradlew.bat installDebug` succeeded on one A142 running Android API 36; explicit launcher, tile support check, add-tile, and click-tile commands succeeded; component registrations were confirmed. The user explicitly confirmed the complete requested visual/manual smoke test with “Ok, funciona”. Repository status remained clean except for untouched untracked `.atl/`. |
 
 ## Next step
 
-Run QST-2 automated re-verification and physical-device smoke from `feat/quick-settings-tile`; preserve `825cf81` as the initial reviewed boundary.
+The feature is verified and ready for the user's delivery decision. Local integration of `feat/quick-settings-tile` into `main` remains a separate decision; preserve `825cf81` as the initial reviewed boundary.
