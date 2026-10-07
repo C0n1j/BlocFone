@@ -14,7 +14,7 @@ android {
         applicationId = "es.c0n1j.blocfone"
         minSdk = 29
         targetSdk = 36
-        versionCode = 3
+        versionCode = 4
         versionName = "1.2.0"
 
     }
