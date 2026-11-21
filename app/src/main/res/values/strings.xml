@@ -11,6 +11,10 @@
     <string name="inactive">Pendiente</string>
     <string name="grant_role">Activar protección</string>
     <string name="grant_contacts">Permitir contactos</string>
+    <string name="contacts_disclosure_title">Acceso a tu lista de contactos</string>
+    <string name="contacts_disclosure_body">BlocFone accede a tus contactos únicamente de forma local para comprobar si las llamadas entrantes pertenecen a números guardados y decidir si bloquearlas.\n\nTus contactos no se copian, no se almacenan en servidores externos y nunca salen de este teléfono.</string>
+    <string name="contacts_disclosure_decline">Ahora no</string>
+    <string name="contacts_disclosure_continue">Continuar</string>
     <string name="role_unavailable">El rol de filtrado no está disponible en este dispositivo.</string>
     <string name="mode_title">Qué quieres bloquear</string>
     <string name="mode_all_title">Todas las llamadas entrantes</string>

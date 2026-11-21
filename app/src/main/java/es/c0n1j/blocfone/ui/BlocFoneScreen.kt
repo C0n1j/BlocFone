@@ -33,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +47,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import es.c0n1j.blocfone.R
 import es.c0n1j.blocfone.contacts.ContactCandidate
 import es.c0n1j.blocfone.contacts.ContactSyncState
@@ -76,6 +78,8 @@ fun BlocFoneScreen(
     onRetrySync: () -> Unit,
     onRetrySettingsRead: () -> Unit,
 ) {
+    var showContactsDisclosure by rememberSaveable { mutableStateOf(false) }
+    val requestContactsWithDisclosure = { showContactsDisclosure = true }
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -115,16 +119,19 @@ fun BlocFoneScreen(
                     roleGranted = roleGranted,
                     roleAvailable = roleAvailable,
                     contactsGranted = contactsGranted,
-                    onRequestContacts = onRequestContacts,
+                    onRequestContacts = requestContactsWithDisclosure,
                     onRequestRole = onRequestRole,
                     onBlockingEnabledChange = onBlockingEnabledChange,
                 )
-                BlockingModeSelector(state.rules.mode, onSelectMode)
+                BlockingModeSelector(state.rules.mode) { mode ->
+                    onSelectMode(mode)
+                    if (mode == BlockingMode.UNKNOWN_NUMBERS && !contactsGranted) showContactsDisclosure = true
+                }
                 if (state.rules.mode == BlockingMode.ALL_INCOMING) {
                     ExceptionsCard(
                         state = state,
                         contactsGranted = contactsGranted,
-                        onRequestContacts = onRequestContacts,
+                        onRequestContacts = requestContactsWithDisclosure,
                         onOpenContactPicker = onOpenContactPicker,
                         onRemoveContact = onRemoveContact,
                         onAddManual = onAddManual,
@@ -165,6 +172,13 @@ fun BlocFoneScreen(
         onDismiss = onDismissContactPicker,
         onQueryChange = onContactQueryChange,
         onSelected = onContactSelected,
+    )
+    if (showContactsDisclosure) ContactsDisclosureDialog(
+        onDecline = { showContactsDisclosure = false },
+        onContinue = {
+            showContactsDisclosure = false
+            onRequestContacts()
+        },
     )
 }
 
@@ -395,6 +409,30 @@ private fun ContactPickerDialog(
             }
         },
         confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) } },
+    )
+}
+
+@Composable
+private fun ContactsDisclosureDialog(
+    onDecline: () -> Unit,
+    onContinue: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDecline,
+        properties = DialogProperties(dismissOnClickOutside = false, dismissOnBackPress = true),
+        title = { Text(stringResource(R.string.contacts_disclosure_title)) },
+        text = {
+            Text(
+                text = stringResource(R.string.contacts_disclosure_body),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        },
+        confirmButton = {
+            Button(onClick = onContinue) { Text(stringResource(R.string.contacts_disclosure_continue)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDecline) { Text(stringResource(R.string.contacts_disclosure_decline)) }
+        },
     )
 }
 
